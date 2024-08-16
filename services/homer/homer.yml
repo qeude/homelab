@@ -1,0 +1,41 @@
+---
+- hosts: homelab
+  become: true
+  tasks:
+    - name: Create the /opt/homer directory
+      file:
+        path: /opt/homer
+        state: directory
+        owner: "1000"
+        group: "1000"
+        mode: '0755'
+
+    - name: Create Docker volume for Homer
+      community.docker.docker_volume:
+        name: homer_data
+        state: present
+
+    - name: Copy custom config.yml file
+      copy:
+        src: files/config.yml
+        dest: /opt/homer/config.yml
+        owner: "1000"
+        group: "1000"
+        mode: '0644'
+
+    - name: Deploy Homer container
+      community.docker.docker_container:
+        name: homer
+        image: b4bz/homer:latest
+        restart_policy: unless-stopped
+        env:
+          GID: "1000"
+          UID: "1000"
+        volumes:
+          - /opt/homer:/www/assets
+        ports:
+          - "8080:8080"
+        networks:
+          - name: homelab_network
+        hostname: homer
+        domainname: local

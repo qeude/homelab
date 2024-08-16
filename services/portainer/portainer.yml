@@ -1,0 +1,22 @@
+- hosts: homelab
+  become: true
+  tasks:
+    - name: Create Docker volume for Portainer data
+      docker_volume:
+        name: portainer_data
+        state: present
+
+    - name: Deploy Portainer container
+      docker_container:
+        name: portainer
+        image: portainer/portainer-ce:latest
+        restart_policy: unless-stopped
+        ports:
+          - "9000:9000"
+        volumes:
+          - "portainer_data:/data"
+          - "/var/run/docker.sock:/var/run/docker.sock"
+        networks:
+          - name: homelab_network
+        hostname: portainer
+        domainname: local

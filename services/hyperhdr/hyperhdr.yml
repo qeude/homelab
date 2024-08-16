@@ -1,0 +1,47 @@
+- hosts: homelab
+  become: true
+  tasks:
+    - name: Ensure Docker and Docker Compose are installed
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - docker.io
+        - docker-compose
+
+    - name: Deploy HyperHDR container
+      community.docker.docker_container:
+        name: hyperhdr
+        image: debian:bullseye
+        command: >
+          bash -c "
+          groupadd -f hyperhdr &&
+          (id -u hyperhdr &>/dev/null || adduser --uid 1000 --gid 1000 --no-create-home --disabled-password hyperhdr) &&
+          chown 1000:1000 /home/hyperhdr &&
+          apt-get update &&
+          DEBIAN_FRONTEND=noninteractive apt-get upgrade -y &&
+          DEBIAN_FRONTEND=noninteractive apt-get install -y wget gpg sudo curl dpkg lsb-release &&
+          wget -qO /usr/share/keyrings/hyperhdr.public.apt.gpg.key https://awawa-dev.github.io/hyperhdr.public.apt.gpg.key &&
+          chmod go+r /usr/share/keyrings/hyperhdr.public.apt.gpg.key &&
+          echo \"deb [signed-by=/usr/share/keyrings/hyperhdr.public.apt.gpg.key] https://awawa-dev.github.io $(lsb_release -cs) main\" > /etc/apt/sources.list.d/hyperhdr.list &&
+          apt-get update &&
+          DEBIAN_FRONTEND=noninteractive apt-get install -y hyperhdr &&
+          apt-get clean &&
+          exec sudo -u hyperhdr /usr/bin/hyperhdr -v --service
+          "
+        restart_policy: unless-stopped
+        ports:
+          - "19400:19400"
+          - "19444:19444"
+          - "19445:19445"
+          - "8090:8090"
+          - "8092:8092"
+        volumes:
+          - /volume1/docker/hyperhdr/config:/home/hyperhdr
+        env:
+          UID: "1000"
+          GID: "1000"
+        networks:
+          - name: homelab_network
+        hostname: hyperhdr
+        domainname: local

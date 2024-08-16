@@ -1,0 +1,4 @@
+- import_playbook: basics/install.yml
+- import_playbook: services/portainer/portainer.yml
+- import_playbook: services/hyperhdr/hyperhdr.yml
+- import_playbook: services/homer/homer.yml

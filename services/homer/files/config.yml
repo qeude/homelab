@@ -1,0 +1,43 @@
+---
+title: "Dashboard"
+logo: "logo.png"
+header: true
+
+columns: "3"
+connectivityCheck: true
+
+services:
+  - name: "System & Infrastructure"
+    icon: "fas fa-server"
+    items:
+      - name: "Portainer"
+        logo: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/portainer.png"
+        url: "http://pi.local:9000"
+      - name: "Pi-hole"
+        logo: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/pi-hole.png"
+        url: "http://<IP_HOMELAB>:80/admin"
+
+  - name: "Media"
+    icon: "fas fa-film"
+    items:
+      - name: "Jellyfin"
+        logo: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/jellyfin.png"
+        url: "http://<IP_HOMELAB>:8096"
+
+      - name: "Radarr"
+        logo: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/radarr.png"
+        url: "http://<IP_HOMELAB>:7878"
+
+      - name: "Sonarr"
+        logo: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/sonarr.png"
+        url: "http://<IP_HOMELAB>:8989"
+
+      - name: "HyperHDR"
+        logo: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/hyperion.png"
+        url: "http://pi.local:8090"
+
+      - name: "OpenBooks"
+        icon: "fas fa-book"
+        url: "http://<IP_HOMELAB>:8081"
+
+footer: "Powered by Homer"
